@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Issue - Campus Cleanliness Management System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        form {
+            background-color: white;
+            padding: 30px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        input, textarea, select {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        button {
+            background-color: #333;
+            color: white;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #555;
+        }
+        p {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Report Issue</h1>
+    <form id="reportIssueForm">
+        <input type="text" id="areaName" placeholder="Area Name" required>
+        <input type="text" id="areaType" placeholder="Area Type">
+        <input type="number" id="floorNumber" placeholder="Floor Number">
+        <input type="text" id="building" placeholder="Building">
+        <textarea id="description" placeholder="Describe the issue" required></textarea>
+        <select id="priority" required>
+            <option value="">Select priority</option>
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+        </select>
+        <button type="submit">Report Issue</button>
+    </form>
+    <p><a href="dashboard.html">Back to Dashboard</a></p>
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+
+        document.getElementById('reportIssueForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formElements = {
+                areaName: document.getElementById('areaName'),
+                areaType: document.getElementById('areaType'),
+                floorNumber: document.getElementById('floorNumber'),
+                building: document.getElementById('building'),
+                description: document.getElementById('description'),
+                priority: document.getElementById('priority')
+            };
+
+            // Check if all elements exist
+            for (const [key, element] of Object.entries(formElements)) {
+                if (!element) {
+                    console.error(`Element with id '${key}' not found`);
+                    alert(`An error occurred: '${key}' element not found`);
+                    return;
+                }
+            }
+
+            const formData = {
+                areaName: formElements.areaName.value,
+                areaType: formElements.areaType.value,
+                floorNumber: formElements.floorNumber.value,
+                building: formElements.building.value,
+                description: formElements.description.value,
+                priority: formElements.priority.value
+            };
+
+            const token = localStorage.getItem('token');
+
+            if (!token) {
+                alert('You must be logged in to report an issue.');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/issues`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    alert('Issue reported successfully.');
+                    document.getElementById('reportIssueForm').reset();
+                } else {
+                    alert(data.error || 'An error occurred while reporting the issue.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            }
+        });
+    </script>
+</body>
+</html>

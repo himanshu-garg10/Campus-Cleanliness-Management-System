@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="student.css">
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h1 class="logo">Welcome!</h1>
+            <p class="name">Student</p>
+            <nav>
+                <a href="#" class="active" id="schedule-link"><i class="fas fa-tachometer-alt"></i>Schedule</a>
+                <a href="#" id="cleaning-request-link"><i class="fas fa-tasks"></i>Cleaning Request</a>
+                <a href="#" id="complaint-link"><i class="fas fa-users"></i>Complaint</a>
+                <a href="#"><i class="fas fa-chart-bar"></i>Feedbacks & Ratings</a>
+            </nav>
+            <a href="#" class="logout" id="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+
+        <!-- Main Content -->
+        <div class="innercontainer">
+            <div class="main-content">
+                <div class="top-bar">
+                    <h2 class="heading">Calendar</h2>
+                    <div class="user-profile">
+                        <i class="fas fa-bell"></i>
+                        <i class="fas fa-envelope"></i>
+                        <img src="https://tse1.mm.bing.net/th?id=OIP.kuxZMCBSXz9TKj2_L0h8UAHaHw&pid=Api&P=0&h=180" alt="User Avatar" class="avatar">
+                    </div>
+                </div>
+                <div id="schedule-content">
+                    <div class="calendar" id="calendar"></div>
+                </div>
+                <div id="cleaning-request-content" style="display: none;">
+                    <h2>Cleaning Request Form</h2>
+                    <form id="cleaning-request-form">
+                        <label for="student-name">Name:</label>
+                        <input type="text" id="student-name" required>
+
+                        <label for="building">Building:</label>
+                        <input type="text" id="building" required>
+
+                        <label for="location">Location:</label>
+                        <select id="location" required>
+                            <option value="room">Room</option>
+                            <option value="washroom">Washroom</option>
+                            <option value="corridor">Corridor</option>
+                        </select>
+
+                        <label for="floor">Floor:</label>
+                        <input type="number" id="floor" required>
+
+                        <label for="description ">Description:</label>
+                        <textarea id="description" rows="4" required></textarea>
+
+                        <label for="date-time">Date and Time:</label>
+                        <input type="datetime-local" id="date-time" required>
+
+                        <button type="submit">Submit Request</button>
+                    </form>
+                </div>
+                <div id="complaint-content" style="display: none;">
+                    <h2>Complaint Form</h2>
+                    <form id="complaint-form">
+                        <label for="complaint-name">Name:</label>
+                        <input type="text" id="complaint-name" required>
+
+                        <label for="complaint-type">Type of Complaint:</label>
+                        <select id="complaint-type" required>
+                            <option value="service">Service Issue</option>
+                            <option value="worker">Worker Issue</option>
+                        </select>
+
+                        <label for="complaint-details">Details:</label>
+                        <textarea id="complaint-details" rows="4" required></textarea>
+
+                        <label for="complaint-date-time">Date and Time:</label>
+                        <input type="datetime-local" id="complaint-date-time" required>
+
+                        <button type="submit">Submit Complaint</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentMonth = new Date().getMonth();
+        let currentYear = new Date().getFullYear();
+
+        function generateCalendar(month, year) {
+            const calendar = document.getElementById('calendar');
+            const date = new Date(year, month);
+            const currentDay = new Date().getDate();
+
+            // Clear previous calendar
+            calendar.innerHTML = '';
+
+            // Create header
+            const header = document.createElement('div');
+            header.className = 'calendar-header';
+
+            // Previous month button
+            const prevButton = document.createElement('button');
+            prevButton.className = 'calendar-button';
+            prevButton.innerText = 'Previous';
+            prevButton.onclick = () => {
+                if (month === 0) {
+                    currentMonth = 11;
+                    currentYear--;
+                } else {
+                    currentMonth--;
+                }
+                generateCalendar(currentMonth, currentYear);
+            };
+            header.appendChild(prevButton);
+
+            // Month-Year display
+            const monthYearDisplay = document.createElement('span');
+            monthYearDisplay.innerText = `${date.toLocaleString('default', { month: 'long' })} ${year}`;
+            header.appendChild(monthYearDisplay);
+
+            // Next month button
+            const nextButton = document.createElement('button');
+            nextButton.className = 'calendar-button';
+            nextButton.innerText = 'Next';
+            nextButton.onclick = () => {
+                if (month === 11) {
+                    currentMonth = 0;
+                    currentYear++;
+                } else {
+                    currentMonth++;
+                }
+                generateCalendar(currentMonth, currentYear);
+            };
+            header.appendChild(nextButton);
+
+            calendar.appendChild(header);
+
+            // Create days of the week
+            const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            const daysRow = document.createElement('div');
+            daysRow.className = 'calendar-days';
+            daysOfWeek.forEach(day => {
+                const dayCell = document.createElement('div');
+                dayCell.className = 'calendar-day';
+                dayCell.innerText = day;
+                daysRow.appendChild(dayCell);
+            });
+            calendar.appendChild(daysRow);
+
+            // Get first day of the month and number of days in month
+            const firstDay = new Date(year, month, 1).getDay();
+            const totalDays = new Date(year, month + 1, 0).getDate();
+
+            // Create empty cells for days before the first day of the month
+            for (let i = 0; i < firstDay; i++) {
+                const emptyCell = document.createElement('div');
+                emptyCell.className = 'calendar-day';
+                daysRow.appendChild(emptyCell);
+            }
+
+            // Create day cells
+            for (let day = 1; day <= totalDays; day++) {
+                const dayCell = document.createElement('div');
+                dayCell.className = 'calendar-day';
+                dayCell.innerText = day;
+
+                // Highlight the current day
+                if (day === currentDay && month === new Date().getMonth() && year === new Date().getFullYear()) {
+                    dayCell.classList.add('current');
+                }
+
+                daysRow.appendChild(dayCell);
+            }
+
+            calendar.appendChild(daysRow);
+        }
+
+        // Initial calendar generation
+        window.onload = generateCalendar(currentMonth, currentYear);
+
+        // Switch between Schedule, Cleaning Request, and Complaint
+        document.getElementById('schedule-link').onclick = function() {
+            document.getElementById('schedule-content').style.display = 'block';
+            document.getElementById('cleaning-request-content').style.display = 'none';
+            document.getElementById('complaint-content').style.display = 'none';
+            this.classList.add('active');
+            document.getElementById('cleaning-request-link').classList.remove('active');
+            document.getElementById('complaint-link').classList.remove('active');
+        };
+
+        document.getElementById('cleaning-request-link').onclick = function() {
+            document.getElementById('schedule-content').style.display = 'none';
+            document.getElementById('cleaning-request-content').style.display = 'block';
+            document.getElementById('complaint-content').style.display = 'none';
+            this.classList.add('active');
+            document.getElementById('schedule-link').classList.remove('active');
+            document.getElementById('complaint-link').classList.remove('active');
+        };
+
+        document.getElementById('complaint-link').onclick = function() {
+            document.getElementById('schedule-content').style.display = 'none';
+            document.getElementById('cleaning-request-content').style.display = 'none';
+            document.getElementById('complaint-content').style.display = 'block';
+            this.classList.add('active');
+            document.getElementById('schedule-link').classList.remove('active');
+            document.getElementById('cleaning-request-link').classList.remove('active');
+        };
+
+        // Handle Cleaning Request form submission
+        document.getElementById('cleaning-request-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const data = {
+                student_name: document.getElementById('student-name').value,
+                building: document.getElementById('building').value,
+                location: document.getElementById('location').value,
+                floor: document.getElementById('floor').value,
+                description: document.getElementById('description').value,
+                date_time: document.getElementById('date-time').value
+            };
+
+            fetch('/api/cleanliness-issues', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => alert('Cleaning Request Submitted'))
+            .catch(error => console.error('Error:', error));
+        });
+
+        // Handle Complaint form submission
+        document.getElementById('complaint-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const data = {
+                student_name: document.getElementById('complaint-name').value,
+                complaint_type: document.getElementById('complaint-type').value,
+                complaint_details: document.getElementById('complaint-details').value,
+                complaint_datetime: document.getElementById('complaint-date-time').value
+            };
+
+            fetch('/api/complaints', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => alert('Complaint Submitted'))
+            .catch(error => console.error('Error:', error));
+        });
+        // Handle Logout
+        document.getElementById('logout-link').onclick = function(e) {
+            e.preventDefault(); // Prevent the default action of the link
+            
+            // Perform any necessary cleanup here, like clearing user session data
+            // For example: localStorage.clear(); or sessionStorage.clear();
+
+            // Redirect to index.html
+            window.location.href = 'index.html';
+        };
+    </script>
+</body>
+</html>

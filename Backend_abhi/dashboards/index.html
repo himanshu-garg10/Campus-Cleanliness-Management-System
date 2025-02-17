@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Cleanliness Portal</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Left Side - College Info -->
+        <div class="college-info">
+            <div class="overlay">
+                <div class="logo-section">
+                    <img src="https://aarambh.jklu.edu.in/_next/image?url=%2Fjklu.png&w=256&q=75" alt="College Logo" class="college-logo">
+                    <h3>JK LAKSHMIPAT UNIVERSITY</h3>
+                </div>
+                
+                <div class="info-content">
+                    <p>Welcome to our College Cleanliness Initiative. We believe that a clean campus
+                    is fundamental to creating an environment conducive to learning and growth.</p>
+                    
+                    <p>Our mission is to maintain the highest standards of cleanliness and hygiene
+                    across all college facilities, ensuring a healthy and comfortable atmosphere
+                    for students, faculty, and staff.</p>
+                    
+                    <div class="importance-section">
+                        <h3>Why Cleanliness Matters:</h3>
+                        <ul>
+                            <li>Creates a healthy learning environment</li>
+                            <li>Enhances campus aesthetics</li>
+                            <li>Promotes sustainability</li>
+                            <li>Builds community responsibility</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side - Auth -->
+        <div class="auth-section">
+            <div class="auth-card">
+                <div class="user-type-selector">
+                    <select id="userType">
+                        <option value="student">Student/Faculty Staff</option>
+                        <option value="resident">Admin</option>
+                        <option value="worker">Cleanliness Worker</option>
+                    </select>
+                </div>
+
+                <!-- Login Form -->
+                <form id="loginForm" method="POST">
+                    <div class="form-group">
+                        <label>
+                            <img src="https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/user.svg" alt="User Icon">
+                            Name
+                        </label>
+                        <input type="text" id="loginName" name="name" required>
+                    </div>
+                
+                    <div class="form-group email-field">
+                        <label>
+                            <img src="https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/mail.svg" alt="Email Icon">
+                            College Email
+                        </label>
+                        <input type="email" id="loginEmail" name="email" required>
+                    </div>
+                
+                    <div class="form-group">
+                        <label>
+                            <img src="https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/lock.svg" alt="Lock Icon">
+                            Password
+                        </label>
+                        <input type="password" id="loginPassword" name="password" required>
+                    </div>
+                
+                    <button type="submit">Login</button>
+                </form>
+                
+
+                <!-- Signup Form -->
+                <form id="signupForm" method="POST">
+                    <div class="form-group">
+                        <label>
+                            <img src="https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/user.svg" alt="User Icon">
+                            Name
+                        </label>
+                        <input type="text" id="signupName" name="name" required>
+                    </div>
+                
+                    <div class="form-group email-field">
+                        <label>
+                            <img src="https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/mail.svg" alt="Email Icon">
+                            College Email
+                        </label>
+                        <input type="email" id="signupEmail" name="email" required>
+                    </div>
+                
+                    <div class="form-group">
+                        <label>
+                            <img src="https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/phone.svg" alt="Phone Icon">
+                            Phone Number
+                        </label>
+                        <input type="tel" id="signupPhone" name="phone" required>
+                    </div>
+                
+                    <div class="form-group">
+                        <label>
+                            <img src="https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/lock.svg" alt="Lock Icon">
+                            Create Password
+                        </label>
+                        <input type="password" id="signupPassword" name="password" required>
+                    </div>
+                
+                    <button type="submit">Sign Up</button>
+                </form>
+                
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Campus Cleanliness Management System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f0f0;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .dashboard {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .stat {
+            margin-bottom: 10px;
+        }
+        nav {
+            margin-top: 20px;
+        }
+        nav a {
+            margin: 0 10px;
+            text-decoration: none;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Dashboard</h1>
+    <div class="dashboard">
+        <h2>Welcome, <span id="userType"></span></h2>
+        <div class="stat">Total Issues: <span id="issueCount"></span></div>
+        <div class="stat">Total Tasks: <span id="taskCount"></span></div>
+    </div>
+    <nav>
+        <a href="report-issue.html">Report Issue</a>
+        <a href="task-manager.html">Task Management</a>
+        <a href="inventory-management.html">Inventory Management</a>
+        <a href="#" id="logoutBtn">Logout</a>
+    </nav>
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+        const token = localStorage.getItem('token');
+        const userType = localStorage.getItem('userType');
+
+        if (!token || !userType) {
+            window.location.href = 'login.html';
+        }
+
+        document.getElementById('userType').textContent = userType;
+
+        async function loadDashboard() {
+            try {
+                const issuesResponse = await fetch(`${API_URL}/issues`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const tasksResponse = await fetch(`${API_URL}/tasks`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const issues = await issuesResponse.json();
+                const tasks = await tasksResponse.json();
+                document.getElementById('issueCount').textContent = issues.length;
+                document.getElementById('taskCount').textContent = tasks.length;
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while loading the dashboard.');
+            }
+        }
+
+        loadDashboard();
+
+        document.getElementById('logoutBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('token');
+            localStorage.removeItem('userType');
+            window.location.href = 'login.html';
+        });
+    </script>
+</body>
+</html>
